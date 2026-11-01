@@ -1,0 +1,13 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/header') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+  <div class="app-main">
+    <main class="container-fluid py-4 px-3 px-lg-4">
+      <div class="mb-4"><a href="/tickets" class="small">← Quay lại danh sách vé</a><h1 class="h3 mt-2 mb-1">Chỉnh sửa vé</h1><p class="text-secondary mb-0">Chỉ thay đổi được thời gian hiệu lực nếu vé chưa được sử dụng.</p></div>
+      <% if (formError) { %><div class="alert alert-danger" role="alert"><%= formError %></div><% } %>
+      <% if (ticket) { %><section class="card dashboard-card"><div class="card-body p-4"><div class="row g-3 mb-4"><div class="col-md-4"><div class="small text-secondary">Mã vé</div><div class="font-monospace"><%= ticket.ticketCode %></div></div><div class="col-md-4"><div class="small text-secondary">Biển số</div><div><%= ticket.licensePlate %></div></div><div class="col-md-4"><div class="small text-secondary">Vị trí</div><div><%= ticket.slotCode %></div></div></div><form method="post" action="/tickets/<%= ticket.id %>/edit"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><div class="row g-3"><div class="col-md-6"><label class="form-label" for="startDate">Ngày bắt đầu</label><input class="form-control" id="startDate" name="startDate" type="date" value="<%= values?.startDate || ticket.startDate %>" required></div><div class="col-md-6"><label class="form-label" for="endDate">Ngày kết thúc</label><input class="form-control" id="endDate" name="endDate" type="date" value="<%= values?.endDate || ticket.endDate %>" required></div></div><div class="row g-3 mt-2"><div class="col-md-4"><div class="small text-secondary">Loại vé</div><div><%= ticket.ticketType %></div></div><div class="col-md-4"><div class="small text-secondary">Trạng thái</div><div><%= ticket.status %></div></div><div class="col-md-4"><div class="small text-secondary">Giá tính lại từ server</div><div><%= Number(ticket.price).toLocaleString('vi-VN') %> VND</div></div></div><div class="d-flex justify-content-end gap-2 mt-4"><a class="btn btn-secondary" href="/tickets">Hủy</a><button class="btn btn-primary" type="submit">Lưu thay đổi</button></div></form></div></section><% } %>
+    </main>
+    <%- include('../partials/footer') %>
+  </div>
+</div>

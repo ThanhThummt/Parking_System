@@ -1,0 +1,25 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/header') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+  <div class="app-main">
+    <main class="container-fluid py-4 px-3 px-lg-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div><p class="text-uppercase small text-primary fw-semibold mb-1">Vận hành bãi đỗ</p><h1 class="h3 mb-1">Tổng quan hôm nay</h1><p class="text-secondary mb-0">Theo dõi nhanh hoạt động và tin tức mới nhất.</p></div>
+        <a class="btn btn-primary" href="/parking/checkin-checkout">Mở màn hình xe vào/ra</a>
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3"><div class="card dashboard-card h-100"><div class="card-body"><p class="small text-secondary mb-2">Tổng số xe</p><p class="display-6 fw-semibold mb-0"><%= summary.vehicleCount %></p></div></div></div>
+        <div class="col-6 col-xl-3"><div class="card dashboard-card h-100"><div class="card-body"><p class="small text-secondary mb-2">Ô đang trống</p><p class="display-6 fw-semibold text-success mb-0"><%= summary.availableSlots %></p></div></div></div>
+        <div class="col-6 col-xl-3"><div class="card dashboard-card h-100"><div class="card-body"><p class="small text-secondary mb-2">Ô đang sử dụng</p><p class="display-6 fw-semibold text-danger mb-0"><%= summary.occupiedSlots %></p></div></div></div>
+        <div class="col-6 col-xl-3"><div class="card dashboard-card h-100"><div class="card-body"><p class="small text-secondary mb-2">Lượt vào / ra hôm nay</p><p class="display-6 fw-semibold mb-0"><%= summary.entriesToday %> <span class="fs-5 text-secondary">/ <%= summary.exitsToday %></span></p></div></div></div>
+      </div>
+      <section class="card dashboard-card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center"><h2 class="h5 mb-0">Tin tức bãi đỗ xe</h2><a href="/news" class="small">Xem tất cả</a></div>
+        <div class="list-group list-group-flush">
+          <% if (!news.length) { %><div class="p-4 text-secondary">Chưa có tin tức được công bố.</div><% } %>
+          <% news.forEach((item) => { %><article class="list-group-item py-3"><h3 class="h6 mb-1"><%= item.title %></h3><p class="small text-secondary mb-1"><%= item.summary || item.content %></p><time class="small text-secondary"><%= new Date(item.published_at).toLocaleDateString('vi-VN') %></time></article><% }) %>
+        </div>
+      </section>
+    </main>
+    <%- include('../partials/footer') %>

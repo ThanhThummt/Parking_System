@@ -10,3 +10,7 @@ server.listen(PORT, () => {
 });
 
 module.exports = server;
+
+app.listen(env.port, () => {
+  process.stdout.write(`Parking system listening on port ${env.port}\n`);
+});

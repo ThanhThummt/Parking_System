@@ -1,0 +1,8 @@
+const SLOT_STATUS = Object.freeze({
+  AVAILABLE: 'AVAILABLE',
+  OCCUPIED: 'OCCUPIED',
+  RESERVED: 'RESERVED',
+  MAINTENANCE: 'MAINTENANCE'
+});
+
+module.exports = { SLOT_STATUS };
