@@ -1,0 +1,86 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/header') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+  <div class="app-main">
+    <main class="container-fluid py-4 px-3 px-lg-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div><p class="text-uppercase small text-primary fw-semibold mb-1">Vận hành</p><h1 class="h3 mb-1">Quản lý xe vào/ra</h1><p class="text-secondary mb-0">Tải ảnh biển số để nhận diện và tiếp tục thao tác.</p></div>
+        <span class="badge text-bg-light border">MANAGER / STAFF</span>
+      </div>
+      <div id="parking-alert" class="alert d-none" role="alert"></div>
+      <div class="row g-4">
+        <div class="col-12 col-xl-7">
+          <section class="card dashboard-card h-100">
+            <div class="card-header bg-white"><h2 class="h5 mb-0">1. Scan biển số từ hình ảnh</h2></div>
+            <div class="card-body">
+              <form id="scan-form" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <label class="form-label" for="plateImage">Ảnh biển số xe</label>
+                <input class="form-control" id="plateImage" name="plateImage" type="file" accept="image/jpeg,image/png,image/webp" required>
+                <div class="form-text">JPEG, PNG hoặc WebP; tối đa 5 MB.</div>
+                <img id="plate-preview" class="img-fluid rounded border mt-3 d-none" alt="Ảnh biển số xem trước">
+                <button class="btn btn-primary mt-3" type="submit"><span aria-hidden="true">⌕</span> Scan biển số</button>
+              </form>
+              <div id="scan-loading" class="small text-secondary mt-3 d-none" role="status">Đang nhận diện biển số...</div>
+            </div>
+          </section>
+        </div>
+        <div class="col-12 col-xl-5">
+          <section class="card dashboard-card h-100">
+            <div class="card-header bg-white"><h2 class="h5 mb-0">2. Thông tin nhận diện</h2></div>
+            <div class="card-body">
+              <div id="scan-empty" class="text-secondary">Chưa có kết quả scan.</div>
+              <dl id="scan-result" class="row mb-0 d-none">
+                <dt class="col-5">Biển số</dt><dd class="col-7 font-monospace" id="result-licensePlate"></dd>
+                <dt class="col-5">Tên xe</dt><dd class="col-7" id="result-vehicleName"></dd>
+                <dt class="col-5">Hãng xe</dt><dd class="col-7" id="result-brand"></dd>
+                <dt class="col-5">Khách hàng</dt><dd class="col-7" id="result-customerName"></dd>
+                <dt class="col-5">Số điện thoại</dt><dd class="col-7" id="result-phone"></dd>
+                <dt class="col-5">Vị trí đỗ</dt><dd class="col-7" id="result-slotCode"></dd>
+              </dl>
+              <button id="open-vehicle-modal" class="btn btn-outline-primary d-none" type="button" data-bs-toggle="modal" data-bs-target="#vehicle-modal">Thêm xe vãng lai</button>
+              <input type="hidden" id="selected-vehicle-id">
+              <input type="hidden" id="scan-token">
+            </div>
+          </section>
+        </div>
+        <div class="col-12 col-lg-6">
+          <section class="card dashboard-card">
+            <div class="card-header bg-white"><h2 class="h5 mb-0">3. Cho xe vào</h2></div>
+            <div class="card-body">
+              <form id="check-in-form">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="mb-3"><label class="form-label" for="slotId">Vị trí đỗ</label><select class="form-select" id="slotId" required><option value="">Chọn ô AVAILABLE</option></select></div>
+                <div class="mb-3"><label class="form-label" for="ticketId">Mã vé (nếu có)</label><input class="form-control" id="ticketId" inputmode="numeric" placeholder="ID vé nội bộ"></div>
+                <button class="btn btn-success" type="submit">Xác nhận xe vào</button>
+              </form>
+            </div>
+          </section>
+        </div>
+        <div class="col-12 col-lg-6">
+          <section class="card dashboard-card">
+            <div class="card-header bg-white"><h2 class="h5 mb-0">4. Cho xe ra</h2></div>
+            <div class="card-body">
+              <form id="check-out-form">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="mb-3"><label class="form-label" for="sessionId">Mã lượt đỗ</label><input class="form-control" id="sessionId" inputmode="numeric" required></div>
+                <button class="btn btn-danger" type="submit">Xác nhận xe ra</button>
+              </form>
+              <div id="checkout-result" class="small text-secondary mt-3"></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+<div class="modal fade" id="vehicle-modal" tabindex="-1" aria-labelledby="vehicle-modal-title" aria-hidden="true">
+  <div class="modal-dialog"><div class="modal-content"><form id="vehicle-form">
+    <div class="modal-header"><h2 class="modal-title h5" id="vehicle-modal-title">Thêm xe vãng lai</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button></div>
+    <div class="modal-body"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" id="new-license-plate" name="licensePlate"><div class="mb-3"><label class="form-label" for="vehicleName">Tên xe</label><input class="form-control" id="vehicleName" name="vehicleName" required></div><div class="mb-3"><label class="form-label" for="brand">Hãng xe</label><input class="form-control" id="brand" name="brand"></div><div><label class="form-label" for="vehicleType">Loại xe</label><select class="form-select" id="vehicleType" name="vehicleType"><option value="MOTORBIKE">Xe máy</option><option value="CAR">Ô tô</option></select></div></div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button><button class="btn btn-primary" type="submit">Lưu xe</button></div>
+  </form></div></div>
+</div>
+<script src="/js/parking-checkin.js"></script>

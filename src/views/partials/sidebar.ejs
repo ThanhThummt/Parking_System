@@ -1,0 +1,33 @@
+<aside class="offcanvas-lg offcanvas-start app-sidebar" tabindex="-1" id="appSidebar" aria-label="Điều hướng chính">
+  <div class="offcanvas-header border-bottom d-lg-none">
+    <h2 class="h6 mb-0">Điều hướng</h2>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Đóng"></button>
+  </div>
+  <div class="offcanvas-body p-3 d-flex flex-column">
+    <p class="text-uppercase small text-secondary fw-semibold mb-2">Menu</p>
+    <nav class="nav nav-pills flex-column gap-1">
+      <a class="nav-link <%= req.path === '/' ? 'active' : '' %>" href="/">Tổng quan</a>
+      <a class="nav-link <%= req.path === '/news' ? 'active' : '' %>" href="/news">Tin tức</a>
+      <% if (currentUser?.role === 'MANAGER' || currentUser?.role === 'STAFF') { %>
+        <a class="nav-link" href="/parking/checkin-checkout">Xe vào/ra</a>
+        <a class="nav-link" href="/parking/map">Bản đồ bãi đỗ</a>
+        <a class="nav-link" href="/customers">Khách hàng</a>
+        <a class="nav-link" href="/tickets">Vé</a>
+        <a class="nav-link" href="/slots">Vị trí đỗ</a>
+      <% } %>
+      <% if (currentUser?.role === 'MANAGER') { %>
+        <a class="nav-link" href="/employees">Nhân viên</a>
+        <a class="nav-link" href="/stats">Thống kê</a>
+      <% } %>
+      <% if (currentUser?.role === 'CUSTOMER') { %>
+        <a class="nav-link" href="/my-vehicles">Xe của tôi</a>
+        <a class="nav-link" href="/parking/map">Đăng ký chỗ đỗ</a>
+        <a class="nav-link" href="/profile">Hồ sơ</a>
+      <% } %>
+    </nav>
+    <div class="mt-auto pt-4">
+      <div class="small text-secondary">Vai trò</div>
+      <div class="fw-semibold"><%= currentUser?.role %></div>
+    </div>
+  </div>
+</aside>

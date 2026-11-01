@@ -1,0 +1,13 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/header') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+  <div class="app-main">
+    <main class="container-fluid py-4 px-3 px-lg-4">
+      <div class="mb-4"><p class="text-uppercase small text-primary fw-semibold mb-1">Cập nhật</p><h1 class="h3 mb-1">Tin tức bãi đỗ xe</h1><p class="text-secondary mb-0">Thông báo vận hành và hướng dẫn sử dụng.</p></div>
+      <div class="row g-3">
+        <% if (!news.length) { %><div class="col-12"><div class="alert alert-light border">Chưa có tin tức được công bố.</div></div><% } %>
+        <% news.forEach((item) => { %><div class="col-12 col-lg-6"><article class="card dashboard-card h-100"><div class="card-body"><time class="small text-secondary"><%= new Date(item.published_at).toLocaleDateString('vi-VN') %></time><h2 class="h5 mt-2"><%= item.title %></h2><p class="text-secondary mb-0"><%= item.content %></p></div></article></div><% }) %>
+      </div>
+    </main>
+    <%- include('../partials/footer') %>
